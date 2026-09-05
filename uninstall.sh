@@ -11,7 +11,9 @@ rm -f /etc/sudoers.d/emby-multi-proxy
 rm -f /etc/nginx/conf.d/emby-multi-proxy.conf
 rm -rf /opt/emby-multi-proxy
 systemctl daemon-reload
-nginx -t >/dev/null 2>&1 && systemctl reload nginx || true
+if nginx -t >/dev/null 2>&1; then
+  systemctl reload nginx || true
+fi
 
 if id emby-panel >/dev/null 2>&1; then
   userdel emby-panel 2>/dev/null || true
