@@ -18,8 +18,12 @@ die(){ printf '\033[1;31m[x]\033[0m %s\n' "$*" >&2; exit 1; }
 
 [[ ${EUID} -eq 0 ]] || die "请使用 root 运行安装脚本"
 command -v apt-get >/dev/null 2>&1 || die "当前版本仅支持 Debian / Ubuntu（apt）"
-[[ "$PUBLIC_PORT" =~ ^[0-9]+$ ]] && (( PUBLIC_PORT >= 1 && PUBLIC_PORT <= 65535 )) || die "EMBY_PROXY_PORT 无效"
-[[ "$PANEL_PORT" =~ ^[0-9]+$ ]] && (( PANEL_PORT >= 1 && PANEL_PORT <= 65535 )) || die "EMBY_PANEL_PORT 无效"
+if ! [[ "$PUBLIC_PORT" =~ ^[0-9]+$ ]] || (( PUBLIC_PORT < 1 || PUBLIC_PORT > 65535 )); then
+  die "EMBY_PROXY_PORT 无效"
+fi
+if ! [[ "$PANEL_PORT" =~ ^[0-9]+$ ]] || (( PANEL_PORT < 1 || PANEL_PORT > 65535 )); then
+  die "EMBY_PANEL_PORT 无效"
+fi
 [[ "$PUBLIC_PORT" != "$PANEL_PORT" ]] || die "公网端口与面板内部端口不能相同"
 
 export DEBIAN_FRONTEND=noninteractive
