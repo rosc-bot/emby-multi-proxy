@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Python syntax
+        run: python3 -m py_compile panel.py core.py
+      - name: Unit tests
+        run: python3 -m unittest discover -s tests -v
+      - name: Bash syntax
+        run: bash -n install.sh
+      - name: Uninstall script syntax
+        run: bash -n uninstall.sh
+      - name: ShellCheck
+        run: shellcheck install.sh uninstall.sh
